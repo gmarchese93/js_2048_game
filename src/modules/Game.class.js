@@ -20,9 +20,7 @@ class Game {
   }
 
   moveRight() {
-    return this.makeMove(board =>
-      board.map(row => this.mergeRow([...row].reverse()).reverse())
-    );
+    return this.makeMove(board => board.map(row => this.mergeRow([...row].reverse()).reverse()));
   }
 
   moveUp() {
@@ -36,9 +34,7 @@ class Game {
   moveDown() {
     return this.makeMove(board => {
       const rotated = this.rotateLeft(board);
-      const moved = rotated.map(row =>
-        this.mergeRow([...row].reverse()).reverse()
-      );
+      const moved = rotated.map(row => this.mergeRow([...row].reverse()).reverse());
       return this.rotateRight(moved);
     });
   }
@@ -56,7 +52,9 @@ class Game {
   }
 
   start() {
-    if (this.status !== 'idle') return;
+    if (this.status !== 'idle') {
+      return;
+    }
 
     this.status = 'playing';
     this.spawnTile();
@@ -74,7 +72,9 @@ class Game {
   ======================= */
 
   makeMove(transformFn) {
-    if (this.status !== 'playing') return false;
+    if (this.status !== 'playing') {
+      return false;
+    }
 
     const newBoard = transformFn(this.cloneBoard(this.board));
 
@@ -89,7 +89,7 @@ class Game {
   }
 
   mergeRow(row) {
-    const filtered = row.filter(v => v !== 0);
+    const filtered = row.filter(value => value !== 0);
     const result = [];
 
     for (let i = 0; i < filtered.length; i++) {
@@ -115,30 +115,28 @@ class Game {
   ======================= */
 
   createEmptyBoard() {
-    return Array.from({ length: this.size }, () =>
-      Array(this.size).fill(0)
-    );
+    return Array.from({ length: this.size }, () => Array(this.size).fill(0));
   }
 
   cloneBoard(board) {
     return board.map(row => [...row]);
   }
 
-  boardsEqual(a, b) {
-    return a.every((row, i) =>
-      row.every((cell, j) => cell === b[i][j])
+  boardsEqual(boardA, boardB) {
+    return boardA.every((row, i) =>
+      row.every((cell, j) => cell === boardB[i][j]),
     );
   }
 
   rotateLeft(board) {
     return board[0].map((_, i) =>
-      board.map(row => row[i]).reverse()
+      board.map(row => row[i]).reverse(),
     );
   }
 
   rotateRight(board) {
     return board[0].map((_, i) =>
-      board.map(row => row[row.length - 1 - i])
+      board.map(row => row[row.length - 1 - i]),
     );
   }
 
@@ -147,17 +145,21 @@ class Game {
   ======================= */
 
   spawnTile() {
-    const empty = [];
+    const emptyCells = [];
 
     this.board.forEach((row, i) => {
       row.forEach((cell, j) => {
-        if (cell === 0) empty.push([i, j]);
+        if (cell === 0) {
+          emptyCells.push([i, j]);
+        }
       });
     });
 
-    if (!empty.length) return;
+    if (!emptyCells.length) {
+      return;
+    }
 
-    const [x, y] = empty[Math.floor(Math.random() * empty.length)];
+    const [x, y] = emptyCells[Math.floor(Math.random() * emptyCells.length)];
     this.board[x][y] = Math.random() < 0.9 ? 2 : 4;
   }
 
@@ -175,11 +177,20 @@ class Game {
   hasMoves() {
     for (let i = 0; i < this.size; i++) {
       for (let j = 0; j < this.size; j++) {
-        if (this.board[i][j] === 0) return true;
-        if (j < 3 && this.board[i][j] === this.board[i][j + 1]) return true;
-        if (i < 3 && this.board[i][j] === this.board[i + 1][j]) return true;
+        if (this.board[i][j] === 0) {
+          return true;
+        }
+
+        if (j < this.size - 1 && this.board[i][j] === this.board[i][j + 1]) {
+          return true;
+        }
+
+        if (i < this.size - 1 && this.board[i][j] === this.board[i + 1][j]) {
+          return true;
+        }
       }
     }
+
     return false;
   }
 }
