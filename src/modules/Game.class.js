@@ -16,11 +16,15 @@ class Game {
   ======================= */
 
   moveLeft() {
-    return this.makeMove(board => board.map(row => this.mergeRow(row)));
+    return this.makeMove(board =>
+      board.map(row => this.mergeRow(row)),
+    );
   }
 
   moveRight() {
-    return this.makeMove(board => board.map(row => this.mergeRow([...row].reverse()).reverse()));
+    return this.makeMove(board =>
+      board.map(row => this.mergeRow([...row].reverse()).reverse()),
+    );
   }
 
   moveUp() {
@@ -33,9 +37,9 @@ class Game {
 
   moveDown() {
     return this.makeMove(board => {
-      const rotated = this.rotateLeft(board);
-      const moved = rotated.map(row => this.mergeRow([...row].reverse()).reverse());
-      return this.rotateRight(moved);
+      const rotated = this.rotateRight(board);
+      const moved = rotated.map(row => this.mergeRow(row));
+      return this.rotateLeft(moved);
     });
   }
 
@@ -97,7 +101,7 @@ class Game {
         const merged = filtered[i] * 2;
         result.push(merged);
         this.score += merged;
-        i++;
+        i += 1;
       } else {
         result.push(filtered[i]);
       }
@@ -115,7 +119,9 @@ class Game {
   ======================= */
 
   createEmptyBoard() {
-    return Array.from({ length: this.size }, () => Array(this.size).fill(0));
+    return Array.from({ length: this.size }, () =>
+      Array(this.size).fill(0),
+    );
   }
 
   cloneBoard(board) {
@@ -128,15 +134,17 @@ class Game {
     );
   }
 
+  // 90° counter-clockwise
   rotateLeft(board) {
     return board[0].map((_, i) =>
-      board.map(row => row[i]).reverse(),
+      board.map(row => row[row.length - 1 - i]),
     );
   }
 
+  // 90° clockwise
   rotateRight(board) {
     return board[0].map((_, i) =>
-      board.map(row => row[row.length - 1 - i]),
+      board.map(row => row[i]).reverse(),
     );
   }
 
@@ -181,11 +189,17 @@ class Game {
           return true;
         }
 
-        if (j < this.size - 1 && this.board[i][j] === this.board[i][j + 1]) {
+        if (
+          j < this.size - 1 &&
+          this.board[i][j] === this.board[i][j + 1]
+        ) {
           return true;
         }
 
-        if (i < this.size - 1 && this.board[i][j] === this.board[i + 1][j]) {
+        if (
+          i < this.size - 1 &&
+          this.board[i][j] === this.board[i + 1][j]
+        ) {
           return true;
         }
       }
